@@ -2,13 +2,10 @@ import { loadHTML } from "@/libs/loadHTML";
 import axios from "axios";
 import { Embeddings, OpenAI, TokenSplitter } from "promptable";
 
-// const SystemMessage: ChatMessage = {
-//   role: "system",
-//   content: "You are a helpful assistant explaining a article to a user.",
-// };
 const openai = new OpenAI(process.env.OPENAI_API_KEY || "");
 export const EMBEDDING_KEY = "chat-url";
 export const CACHE_DIR = "embeddings";
+export let embeddings: Embeddings;
 
 export async function prepareChatbot(url: string) {
   try {
@@ -29,7 +26,7 @@ export async function prepareChatbot(url: string) {
 
     const chunks = textSplitter.splitDocuments(docs);
 
-    const embeddings = new Embeddings(EMBEDDING_KEY, openai, chunks, {
+    embeddings = new Embeddings(EMBEDDING_KEY, openai, chunks, {
       cacheDir: CACHE_DIR,
     });
     await embeddings.index();

@@ -38,7 +38,7 @@ const Home: NextPage = () => {
     });
 
   const onSubmit = async (formData: FormData) => {
-    const res = await fetch("/api/bake-chat", {
+    const res = await fetch("/api/prepare-chatbot", {
       method: "POST",
       body: JSON.stringify({ url: formData.url }),
     });
