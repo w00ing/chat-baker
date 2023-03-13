@@ -1,9 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { CACHE_DIR } from "@/libs/prepareChatbot";
+import { CACHE_DIR, EMBEDDING_KEY } from "@/libs/prepareChatbot";
 import {
   BufferedChatMemory,
+  Embeddings,
   FileLoader,
   MemoryLLMChain,
   OpenAI,
@@ -30,16 +31,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { userInput, clear } = JSON.parse(req.body);
-
-  // const chatRes = await fetch('https://api.openai.com/v1/chat', {
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     Authorization: `Bearer ${process.env.OPENAI_API_KEY ?? ''}`,
-  //   },
-  //   method: 'POST',
-  //   body: JSON.stringify(userInput),
-  // });
-
   const userMessage: ChatMessage = { role: "user", content: userInput };
 
   const messages = [SystemMessage, userMessage];
@@ -48,33 +39,23 @@ export default async function handler(
   const body = JSON.stringify(options);
 
   const fileLoader = new FileLoader(CACHE_DIR);
+  const file = await fileLoader.load();
 
-  const embeddings = await fileLoader.load();
+  const embeddings = new Embeddings(EMBEDDING_KEY, openai, file, {
+    cacheDir: CACHE_DIR,
+  });
+  await embeddings.index();
+  console.log("embeddings", embeddings);
 
   try {
-    const chatRes = await fetch(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY ?? ""}`,
-        },
-        method: "POST",
-        body,
-      }
-      // {
-      //   messages: req.messages,
-      //   ...options,
-      //   model: "gpt-3.5-turbo",
-      // },
-      // {
-      //   headers: {
-      //     Authorization: `Bearer ${this.apiKey}`,
-      //     "Content-Type": "application/json",
-      //   },
-      // }
-      //   body: JSON.stringify(userInput),
-    );
+    const chatRes = await fetch("https://api.openai.com/v1/chat/completions", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY ?? ""}`,
+      },
+      method: "POST",
+      body,
+    });
 
     const data = await chatRes.json();
 

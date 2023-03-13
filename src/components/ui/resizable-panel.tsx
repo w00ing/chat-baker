@@ -6,7 +6,7 @@ export default function ResizablePanel({
 }: {
   children: React.ReactNode;
 }) {
-  let [ref, { height }] = useMeasure();
+  const [ref, { height }] = useMeasure();
 
   return (
     <motion.div
