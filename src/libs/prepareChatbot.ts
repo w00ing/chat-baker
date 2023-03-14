@@ -6,6 +6,11 @@ const openai = new OpenAI(process.env.OPENAI_API_KEY || "");
 export const EMBEDDING_KEY = "chat-url";
 export const CACHE_DIR = "/tmp/embeddings";
 
+// const redis = new Redis({
+//   url: process.env.UPSTASH_REDIS_REST_URL,
+//   token: process.env.UPSTASH_REDIS_REST_TOKEN,
+// });
+
 export async function prepareChatbot(url: string) {
   try {
     if (!url) {
