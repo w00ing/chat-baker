@@ -1,6 +1,7 @@
 import { type AppType } from "next/dist/shared/lib/utils";
 import { Inter as FontSans } from "next/font/google";
 import Head from "next/head";
+import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "next-themes";
 
 import "../styles/globals.css";
@@ -29,6 +30,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       </Head>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <Component {...pageProps} />
+        <Analytics />
       </ThemeProvider>
     </>
   );
