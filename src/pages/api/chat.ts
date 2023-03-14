@@ -40,10 +40,15 @@ export default async function handler(
   });
   await embeddings.index();
 
+  console.log("querying...");
+  console.time("querying");
   const queryResults = await embeddings.query(input, 8);
   const similarDocs = queryResults
     .map((qr) => qr.document.content)
     .join("\n\n");
+
+  console.log("queried");
+  console.timeEnd("querying");
 
   const userMessage: ChatMessage = { role: "user", content: input };
   const queryMessage: ChatMessage = {
@@ -57,6 +62,8 @@ export default async function handler(
   const body = JSON.stringify(options);
 
   try {
+    console.log("chatting...");
+    console.time("chatting");
     const chatRes = await fetch("https://api.openai.com/v1/chat/completions", {
       headers: {
         "Content-Type": "application/json",
@@ -72,6 +79,8 @@ export default async function handler(
 
     const answer = data.choices[0]?.message;
     console.log("answer", answer);
+    console.log("chatted");
+    console.timeEnd("chatting");
     return res.status(200).json({ answer });
   } catch (e) {
     console.error(e);
