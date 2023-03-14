@@ -21,11 +21,11 @@ export default function Document() {
         />
         <meta
           property="og:image"
-          content="https://ideagenerator-xyz.vercel.app/og-image.png"
+          content="https://www.chat-baker.com/og-image.png"
         />
         <meta
           name="twitter:image"
-          content="https://ideagenerator-xyz.vercel.app/og-image.png"
+          content="https://www.chat-baker.com/og-image.png"
         />
       </Head>
       <body
