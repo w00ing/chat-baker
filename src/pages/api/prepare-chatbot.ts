@@ -7,7 +7,7 @@ interface Body {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<string>
+  res: NextApiResponse
 ) {
   // Rate Limiter Code
   // if (ratelimit) {
@@ -29,11 +29,11 @@ export default async function handler(
   // const fileLoader = new FileLoader("./data/cache/index/chat-url.json");
   // const document = await fileLoader.load();
   // console.log("file", document);
-  const chatbotReady = await prepareChatbot(url);
+  const hostname = await prepareChatbot(url);
 
-  if (!chatbotReady) {
+  if (!hostname) {
     res.status(500).json("Failed to prepare chatbot");
     return;
   }
-  res.status(200).json(url ?? "Failed to retreive message");
+  res.status(200).json({ hostname });
 }

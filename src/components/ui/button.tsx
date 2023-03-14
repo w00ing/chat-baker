@@ -1,6 +1,6 @@
 import * as React from "react";
 import { cn } from "@/libs/cn";
-import { VariantProps, cva } from "class-variance-authority";
+import { cva, type VariantProps } from "class-variance-authority";
 
 import LoadingDots from "@/components/ui/loading-dots";
 
@@ -52,7 +52,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || loading}
         {...props}
       >
-        {loading ? <LoadingDots color="white" style="large" /> : children}
+        {loading ? <LoadingDots color="white" size="large" /> : children}
       </button>
     );
   }

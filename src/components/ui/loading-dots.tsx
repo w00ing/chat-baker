@@ -1,8 +1,16 @@
-import styles from '../../styles/loading-dots.module.css';
+import { cn } from "@/libs/cn";
 
-const LoadingDots = ({ color = '#000', style = 'small' }: { color: string; style: string }) => {
+import styles from "../../styles/loading-dots.module.css";
+
+const LoadingDots = ({
+  color = "#000",
+  size = "small",
+}: {
+  color?: string;
+  size?: "small" | "large";
+}) => {
   return (
-    <span className={style == 'small' ? styles.loading2 : styles.loading}>
+    <span className={cn(size == "small" ? styles.loading2 : styles.loading)}>
       <span style={{ backgroundColor: color }} />
       <span style={{ backgroundColor: color }} />
       <span style={{ backgroundColor: color }} />
@@ -13,5 +21,5 @@ const LoadingDots = ({ color = '#000', style = 'small' }: { color: string; style
 export default LoadingDots;
 
 LoadingDots.defaultProps = {
-  style: 'small',
+  style: "small",
 };
