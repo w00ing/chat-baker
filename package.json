@@ -86,8 +86,5 @@
   },
   "ct3aMetadata": {
     "initVersion": "7.5.1"
-  },
-  "resolutions": {
-    "promptable@^0.0.10": "patch:promptable@npm%3A0.0.10#./.yarn/patches/promptable-npm-0.0.10-877123ed16.patch"
   }
 }

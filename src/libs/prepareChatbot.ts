@@ -4,7 +4,7 @@ import { Embeddings, OpenAI, TokenSplitter } from "promptable";
 
 const openai = new OpenAI(process.env.OPENAI_API_KEY || "");
 export const EMBEDDING_KEY = "chat-url";
-export const CACHE_DIR = "embeddings";
+export const CACHE_DIR = "/tmp/embeddings";
 
 export async function prepareChatbot(url: string) {
   try {
@@ -54,7 +54,6 @@ export async function prepareChatbot(url: string) {
     const hostname = new URL(url).hostname;
     return hostname;
   } catch (e) {
-    console.log(e);
-    return false;
+    throw e;
   }
 }
