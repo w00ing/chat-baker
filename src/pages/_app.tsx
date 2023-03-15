@@ -28,7 +28,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <title>Chat Baker</title>
         <link rel="icon" href="/logo.svg" />
       </Head>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
         <Component {...pageProps} />
         <Analytics />
       </ThemeProvider>
