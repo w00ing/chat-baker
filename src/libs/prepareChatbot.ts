@@ -1,5 +1,5 @@
 import fs from "fs";
-import { loadHTML } from "@/libs/loadHTML";
+import { loadHTML } from "@/libs/loadHTML copy";
 import { Embeddings, OpenAI, TokenSplitter } from "promptable";
 
 const openai = new OpenAI(process.env.OPENAI_API_KEY || "");

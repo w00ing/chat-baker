@@ -53,6 +53,7 @@
     "next-themes": "^0.2.1",
     "openai": "^3.2.1",
     "promptable": "^0.0.10",
+    "puppeteer": "^19.7.5",
     "react": "18.2.0",
     "react-device-detect": "^2.2.3",
     "react-dom": "18.2.0",
