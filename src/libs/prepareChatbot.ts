@@ -4,12 +4,18 @@ import {
   type Page,
 } from "langchain/document_loaders/web/puppeteer";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { HNSWLib } from "langchain/vectorstores/hnswlib";
 
-export const CACHE_DIR = "./embeddings";
+export const CACHE_DIR = "/tmp/embeddings";
 
 const embeddings = new OpenAIEmbeddings({
   openAIApiKey: process.env.OPENAI_API_KEY,
+});
+
+const splitter = new RecursiveCharacterTextSplitter({
+  chunkSize: 1000,
+  chunkOverlap: 25,
 });
 
 export async function prepareChatbot(url: string) {
@@ -37,7 +43,9 @@ export async function prepareChatbot(url: string) {
 
     const docs = await loader.load();
 
-    const vectorStore = await HNSWLib.fromDocuments(docs, embeddings);
+    const splittedDocs = await splitter.splitDocuments(docs);
+
+    const vectorStore = await HNSWLib.fromDocuments(splittedDocs, embeddings);
 
     await vectorStore.save(CACHE_DIR);
 

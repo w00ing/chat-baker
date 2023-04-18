@@ -6,13 +6,6 @@ import { CallbackManager } from "langchain/callbacks";
 import { ConversationalRetrievalQAChain } from "langchain/chains";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { OpenAI } from "langchain/llms/openai";
-import { BufferMemory } from "langchain/memory";
-import {
-  ChatPromptTemplate,
-  HumanMessagePromptTemplate,
-  MessagesPlaceholder,
-  SystemMessagePromptTemplate,
-} from "langchain/prompts";
 import { HNSWLib } from "langchain/vectorstores/hnswlib";
 
 const callbackManager = CallbackManager.fromHandlers({
@@ -32,12 +25,6 @@ const callbackManager = CallbackManager.fromHandlers({
 
 const MEMORY_KEY = "history";
 
-const memory = new BufferMemory({
-  memoryKey: MEMORY_KEY,
-  inputKey: "input",
-  returnMessages: true,
-});
-
 const model = new OpenAI({
   openAIApiKey: process.env.OPENAI_API_KEY,
   modelName: "gpt-3.5-turbo",
@@ -49,14 +36,6 @@ const model = new OpenAI({
 const embeddings = new OpenAIEmbeddings({
   openAIApiKey: process.env.OPENAI_API_KEY,
 });
-
-const prompt = ChatPromptTemplate.fromPromptMessages([
-  SystemMessagePromptTemplate.fromTemplate(
-    `너의 이름은 챗 베이커야. 유저가 질문하면, 네가 가진 정보를 토대로 친절하게 대답해줘. 정보가 부족하면 답을 모른다고 말해. 답을 지어내려 하지 마.`
-  ),
-  new MessagesPlaceholder(MEMORY_KEY),
-  HumanMessagePromptTemplate.fromTemplate("{input}"),
-]);
 
 export default async function handler(
   req: NextApiRequest,
@@ -70,7 +49,7 @@ export default async function handler(
 
     const chain = ConversationalRetrievalQAChain.fromLLM(
       model,
-      vectorStore.asRetriever(1)
+      vectorStore.asRetriever(5)
     );
 
     const { text } = await chain.call({
