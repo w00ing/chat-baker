@@ -23,14 +23,13 @@ const callbackManager = CallbackManager.fromHandlers({
   },
 });
 
-const MEMORY_KEY = "history";
-
 const model = new OpenAI({
   openAIApiKey: process.env.OPENAI_API_KEY,
   modelName: "gpt-3.5-turbo",
   cache: true,
   verbose: true,
   callbackManager,
+  streaming: true,
 });
 
 const embeddings = new OpenAIEmbeddings({

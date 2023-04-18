@@ -1,0 +1,26 @@
+diff --git a/dist/document_loaders/web/puppeteer.cjs b/dist/document_loaders/web/puppeteer.cjs
+index fbcaa75d69e03a2d761f6af01cab7682a657a8f5..ce199b60cd2fcc19e9f2d64ba113f1e3b0412a67 100644
+--- a/dist/document_loaders/web/puppeteer.cjs
++++ b/dist/document_loaders/web/puppeteer.cjs
+@@ -51,7 +51,7 @@ class PuppeteerWebBaseLoader extends base_js_1.BaseDocumentLoader {
+     static async imports() {
+         try {
+             // eslint-disable-next-line import/no-extraneous-dependencies
+-            const { launch } = await import("puppeteer");
++            const { launch } = await import("puppeteer-core");
+             return { launch };
+         }
+         catch (e) {
+diff --git a/dist/document_loaders/web/puppeteer.js b/dist/document_loaders/web/puppeteer.js
+index 8476ac903fdce0bef82a12fa33de25b2b1c78ec5..9878491ad997b555e8e06dc0cbcfe0fb751479b5 100644
+--- a/dist/document_loaders/web/puppeteer.js
++++ b/dist/document_loaders/web/puppeteer.js
+@@ -48,7 +48,7 @@ export class PuppeteerWebBaseLoader extends BaseDocumentLoader {
+     static async imports() {
+         try {
+             // eslint-disable-next-line import/no-extraneous-dependencies
+-            const { launch } = await import("puppeteer");
++            const { launch } = await import("puppeteer-core");
+             return { launch };
+         }
+         catch (e) {

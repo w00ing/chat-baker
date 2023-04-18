@@ -1,11 +1,14 @@
-import {
-  PuppeteerWebBaseLoader,
-  type Browser,
-  type Page,
-} from "langchain/document_loaders/web/puppeteer";
+// import {
+//   PuppeteerWebBaseLoader,
+//   type Browser,
+//   type Page,
+// } from "langchain/document_loaders/web/puppeteer";
+import chrome from "@sparticuz/chromium-min";
+import { Document } from "langchain/document";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { HNSWLib } from "langchain/vectorstores/hnswlib";
+import puppeteer from "puppeteer-core";
 
 export const CACHE_DIR = "/tmp/embeddings";
 
@@ -24,24 +27,28 @@ export async function prepareChatbot(url: string) {
       return;
     }
 
-    console.log("loader start");
-    const loader = new PuppeteerWebBaseLoader(url, {
-      launchOptions: {
-        headless: true,
-      },
-      gotoOptions: {
-        waitUntil: "domcontentloaded",
-      },
-      async evaluate(page: Page, browser: Browser) {
-        // await page.waitForResponse(url);
-        // console.log("wait complete");
-        const result = await page.evaluate(() => document.body.innerText);
-        console.log("result", result);
-        return result;
-      },
+    const browser = await puppeteer.launch({
+      args: chrome.args,
+      headless: true,
+      defaultViewport: chrome.defaultViewport,
+      executablePath: await chrome.executablePath(process.env.CHROMIUM_PATH),
+      ignoreHTTPSErrors: true,
     });
 
-    const docs = await loader.load();
+    const page = await browser.newPage();
+
+    console.log("Chromium:", await browser.version());
+    console.log("Page Title:", await page.title());
+    await page.goto(url, { waitUntil: "domcontentloaded" });
+
+    const bodyText = await page.evaluate(() => document.body.innerText);
+
+    await page.close();
+    await browser.close();
+
+    const docs = [
+      new Document({ pageContent: bodyText, metadata: { source: url } }),
+    ];
 
     const splittedDocs = await splitter.splitDocuments(docs);
 
