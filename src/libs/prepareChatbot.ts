@@ -1,15 +1,16 @@
-import fs from "fs";
-import { loadHTML } from "@/libs/loadHTML";
-import { Embeddings, OpenAI, TokenSplitter } from "promptable";
+import {
+  PuppeteerWebBaseLoader,
+  type Browser,
+  type Page,
+} from "langchain/document_loaders/web/puppeteer";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { HNSWLib } from "langchain/vectorstores/hnswlib";
 
-const openai = new OpenAI(process.env.OPENAI_API_KEY || "");
-export const EMBEDDING_KEY = "chat-url";
-export const CACHE_DIR = "/tmp/embeddings";
+export const CACHE_DIR = "./embeddings";
 
-// const redis = new Redis({
-//   url: process.env.UPSTASH_REDIS_REST_URL,
-//   token: process.env.UPSTASH_REDIS_REST_TOKEN,
-// });
+const embeddings = new OpenAIEmbeddings({
+  openAIApiKey: process.env.OPENAI_API_KEY,
+});
 
 export async function prepareChatbot(url: string) {
   try {
@@ -17,45 +18,29 @@ export async function prepareChatbot(url: string) {
       return;
     }
 
-    fs.rmSync(`${CACHE_DIR}/${EMBEDDING_KEY}.json`, { force: true });
-
-    console.log("Parsing data...");
-
-    console.time("loadHTML");
-
-    const docs = await loadHTML(url);
-
-    console.timeEnd("loadHTML");
-
-    console.log("splitting...");
-    console.time("splitting");
-
-    const textSplitter = new TokenSplitter({
-      chunk: true,
-      chunkSize: 500,
+    console.log("loader start");
+    const loader = new PuppeteerWebBaseLoader(url, {
+      launchOptions: {
+        headless: true,
+      },
+      gotoOptions: {
+        waitUntil: "domcontentloaded",
+      },
+      async evaluate(page: Page, browser: Browser) {
+        // await page.waitForResponse(url);
+        // console.log("wait complete");
+        const result = await page.evaluate(() => document.body.innerText);
+        console.log("result", result);
+        return result;
+      },
     });
-    console.log("splitted");
-    console.timeEnd("splitting");
 
-    const chunks = textSplitter.splitDocuments(docs);
+    const docs = await loader.load();
 
-    console.log("creating embeddings...");
-    console.time("embedding");
-    const embeddings = new Embeddings(EMBEDDING_KEY, openai, chunks, {
-      cacheDir: CACHE_DIR,
-    });
-    console.log("embedded");
-    console.timeEnd("embedding");
+    const vectorStore = await HNSWLib.fromDocuments(docs, embeddings);
 
-    console.log("indexing...");
-    console.time("indexing");
-    await embeddings.index();
-    console.log("indexed");
-    console.timeEnd("indexing");
+    await vectorStore.save(CACHE_DIR);
 
-    console.log("Chatbot ready!");
-    // const memory = new BufferedChatMemory()
-    // memory.
     const hostname = new URL(url).hostname;
     return hostname;
   } catch (e) {

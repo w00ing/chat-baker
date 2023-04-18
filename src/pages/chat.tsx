@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
 import { cn } from "@/libs/cn";
-import type { ChatMessage } from "@/pages/api/chat";
 import { AnimatePresence, motion } from "framer-motion";
 import { Send } from "lucide-react";
 import { isMobile } from "react-device-detect";
@@ -22,6 +21,10 @@ type FormData = {
   input: string;
 };
 
+type ChatMessage = {
+  role: "user" | "assistant" | "system";
+  content: string;
+};
 type Message = ChatMessage & { id: string };
 
 const scrollToBottom = (element: HTMLElement) => {
@@ -73,6 +76,7 @@ const Chat: NextPage<PageProps> = ({ query }) => {
       const answerMessage = { ...answer, id: uuid() };
 
       console.log("res", res);
+      console.log(answerMessage);
       setMessages((prev) => [...prev, answerMessage]);
       setFetchingAnswer(false);
     } catch (e) {
