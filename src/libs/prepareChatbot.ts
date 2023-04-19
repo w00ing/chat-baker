@@ -31,7 +31,10 @@ export async function prepareChatbot(url: string) {
       args: chrome.args,
       headless: true,
       defaultViewport: chrome.defaultViewport,
-      executablePath: await chrome.executablePath(process.env.CHROMIUM_PATH),
+      executablePath:
+        process.env.NODE_ENV === "production"
+          ? await chrome.executablePath(process.env.CHROMIUM_PATH)
+          : process.env.CHROMIUM_PATH_LOCAL,
       ignoreHTTPSErrors: true,
     });
 

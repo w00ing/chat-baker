@@ -26,13 +26,17 @@ git clone
 
 Create a file in root directory of project with env. And store your API key in it, as shown in the .example.env file.
 
-### Storing Chromium executable path in .env file.
+### Chromium executable path.
 
 As Vercel serverless function is bound to AWS lambda, it does not allow dependencies larger than 50mb. So, we need to upload the Chromium executable to our storage and use it from there. You can use any storage you want.
 
 Upload a Chromium brotli file to your storage, such as S3, or Github.
 
 ex) https://github.com/Sparticuz/chromium/releases/download/v110.0.1/chromium-v110.0.1-pack.tar
+
+Then, use process.env.CHROMIUM_PATH to store the path to the executable.
+
+If you are running the application locally, provide the path to the Chromium executable to process.env.CHROMIUM_PATH_LOCAL.
 
 Reference: https://github.com/Sparticuz/chromium#-min-package
 
