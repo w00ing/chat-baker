@@ -58,7 +58,7 @@ export default async function handler(
 
   const messages = [SystemMessage, userMessage, queryMessage];
 
-  const options = { model: "gpt-3.5-turbo", messages };
+  const options = { model: "gpt-4-turbo", messages };
   const body = JSON.stringify(options);
 
   try {
