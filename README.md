@@ -1,4 +1,4 @@
-# [Chat Baker](https://chat-baker.com)
+# [Chat Baker](https://chat-baker-cyan.vercel.app/)
 
 Type in any URL to bake a personal chatbot!
 
